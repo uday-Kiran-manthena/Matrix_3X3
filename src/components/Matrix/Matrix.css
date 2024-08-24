@@ -1,0 +1,27 @@
+/* src/components/Matrix/Matrix.css */
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 5px;
+}
+.title {
+  color: white;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+.box {
+  width: 100px;
+  height: 100px;
+  background-color: lightgray;
+  border: 1px solid #000;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for color and scale */
+  /* Adding a scale effect on hover */
+  transform: scale(1);
+}
+
+.box:hover {
+  background-color: #ccc; /* Change color on hover for better UX */
+  transform: scale(1.03); /* Slightly scale up on hover */
+}
