@@ -1,53 +1,46 @@
-// src/components/Matrix/Matrix.js
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import "./Matrix.css";
 
-const Box = ({ id, color, handleClick }) => {
-  return (
-    <div
-      className="box"
-      style={{ backgroundColor: color }}
-      onClick={() => handleClick(id)}
-    />
-  );
-};
+const Box = ({ id, color, handleClick }) => (
+  <div
+    className="box"
+    style={{ backgroundColor: color }}
+    onClick={() => handleClick(id)}
+  />
+);
 
 const Matrix = () => {
-  const [boxes, setBoxes] = useState(Array(9).fill(null)); // Array to hold box colors
-  const [clickOrder, setClickOrder] = useState([]); // Array to track order of clicks
-  const [isComplete, setIsComplete] = useState(false); // Tracks if all boxes have been clicked
+  const [boxes, setBoxes] = useState(Array(9).fill(null)); // State to hold box colors
+  const [clickOrder, setClickOrder] = useState([]); // State to track the order of clicks
 
-  const handleClick = useCallback(
-    (id) => {
-      // Prevent further changes if the process is complete or if the box has already been clicked
-      if (isComplete || clickOrder.includes(id)) return;
+  const handleClick = (id) => {
+    // If This box was already clicked, do nothing
+    if (clickOrder.includes(id)) return;
 
-      const newBoxes = [...boxes];
-      newBoxes[id] = "green"; // Change clicked box color to green
-      setBoxes(newBoxes);
-      setClickOrder((prevOrder) => [...prevOrder, id]); // Track the order of the clicks
+    const newBoxes = [...boxes];
+    newBoxes[id] = "green"; // Change the clicked box's color to green
+    setBoxes(newBoxes);
+    setClickOrder([...clickOrder, id]); // Add this box's ID to the order of clicks
 
-      if (clickOrder.length === 8) {
-        // If this is the last box to be clicked
-        setIsComplete(true); // Mark as complete to prevent further changes
-        setTimeout(() => changeToOrange([...clickOrder, id]), 100); // Delay to ensure green color is visible first
-      }
-    },
-    [isComplete, clickOrder, boxes]
-  );
+    // If this was the last box to be clicked
+    if (clickOrder.length === 8) {
+      setTimeout(() => turnBoxesOrange([...clickOrder, id]), 250); // Start turning boxes orange after a short delay
+    }
+  };
 
-  const changeToOrange = useCallback(
-    (order) => {
-      const newBoxes = [...boxes]; // Create a copy of the current state
-      order.forEach((id, index) => {
-        setTimeout(() => {
-          newBoxes[id] = "orange"; // Change color to orange one by one
-          setBoxes([...newBoxes]); // Update state with the new color
-        }, index * 500); // Delay between each box turning orange (500ms)
-      });
-    },
-    [boxes]
-  );
+  const turnBoxesOrange = (order) => {
+    // Change each box in the click order to orange, with a delay between each
+    order.forEach((id, index) => {
+      setTimeout(() => {
+        setBoxes((prevBoxes) => {
+          const updatedBoxes = [...prevBoxes];
+          updatedBoxes[id] = "orange";
+          return updatedBoxes;
+        });
+      }, index * 500);
+    });
+  };
+
   return (
     <>
       <p className="title">3x3 Matrix</p>
